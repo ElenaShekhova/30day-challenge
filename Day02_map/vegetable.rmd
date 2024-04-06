@@ -1,0 +1,52 @@
+---
+```{r}
+
+```
+title: "R Notebook"
+output: html_document
+---
+
+We are interested only in consumption per 2021
+
+The last column 'Vegetables | 00002918 || Food available for consumption | 0645pc || kilograms per year per capita'
+was changed to 'Vegetables'
+
+
+```{r}
+library(dplyr)
+veg_data <- read.csv(file = "vegetable-consumption-per-capita.csv", header = TRUE) %>%
+  filter(Year == "2021" ) %>%
+  filter(sovereignt %in% c("Albania", "China", "Croatia", "Chad", "Democratic Republic of the Congo", "Ethiopia"))
+```
+
+
+Type any R code in the chunk, for example:
+```{r}
+library("ggplot2")
+theme_set(theme_bw())
+library("sf")
+```
+```{r}
+library("rnaturalearth")
+library("rnaturalearthdata")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+## [1] "sf"
+## [1] "data.frame"
+```
+```{r}
+ggplot(data = world) + geom_sf()
+```
+```{r}
+merged_df <- merge(world, veg_data, by = "sovereignt", all.x = TRUE)
+```
+```{r}
+vegconsPLOT <- ggplot(data = merged_df) +
+  geom_sf(aes(fill = Vegetables)) +
+  scale_fill_viridis_c(option = "plasma", trans = "sqrt")
+
+ggsave("vegconsPLOT.svg", plot = vegconsPLOT, device = "svg")
+
+```

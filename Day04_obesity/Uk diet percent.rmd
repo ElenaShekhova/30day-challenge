@@ -1,0 +1,63 @@
+---
+title: "R Notebook"
+output: html_document
+---
+
+
+```{r}
+
+library(ggplot2)
+
+obesety_uk <- sample(c("O", "notO"), 1000, replace = TRUE, prob = c(0.295, 0.705))
+obesety_jap <- sample(c("O", "notO"), 1000, replace = TRUE, prob = c(0.044, 0.956))
+
+coor <- read.table("cci1000.txt", col.names = c("N", "x", "y"))
+
+df_uk <- cbind(coor, obesety_uk)
+df_jap <- cbind(coor, obesety_jap)
+
+
+```
+p
+```{r}
+colors <- c("O" = "blue3", "notO" = "aliceblue")
+plotjap <- ggplot(df_jap, aes(x, y, color=obesety_jap))+
+  geom_point()+
+  theme_void()+
+  theme(legend.position = "none")+
+  labs(subtitle = "Japan")+
+        theme(plot.subtitle = element_text(size = 20))+
+        scale_color_manual(values = colors)
+plotjap
+```
+
+Type any R code in the chunk, for example:
+```{r}
+plotuk <- ggplot(df_uk, aes(x, y, color=obesety_uk))+
+  geom_point()+
+  theme_void()+
+  theme(legend.position = "none") + scale_color_manual(values = colors)+
+  labs(title = "Prevalence of Obesity in 2016",
+       subtitle = "UK")+
+        theme(plot.title = element_text(size = 26),  # Increase title size
+                plot.subtitle = element_text(size = 20) # Increase subtitle size
+        )
+plotuk
+```
+```{r}
+
+library(ggimage)
+#final_uk <- ggplot(df_uk, aes(x, y)) +
+ # geom_image(aes(image = ifelse(obesety_uk == "O", "red.png", "black.png")),
+          #   size = 0.02) +
+  ##ggsave("obesity_uk.svg", plot = final_uk, device = "svg")
+```
+```{r}
+library(patchwork)
+
+combined_plot <- plotuk + plotjap +
+  plot_layout(ncol = 2)+ plot_annotation(caption = 'Data source: Our World in Data | Created by Elena Shekhova')
+
+combined_plot
+ggsave("combined_plot.png", plot = combined_plot, width = 12, height = 6, bg = "#F1EFE6")
+```

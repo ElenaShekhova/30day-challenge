@@ -1,0 +1,129 @@
+---
+title: "R Notebook"
+output: html_document
+---
+
+Data source
+Carbonell, E. (2005). Homínidos: las primeras ocupaciones de los continentes. Editorial Ariel.
+Santiago Costabile
+
+```{r}
+library(dplyr)
+library(ggplot2)
+homid_data <- read.csv(file = "Homininos_DataSet (1).csv", header = TRUE)
+homid_data$Diet <- gsub("omnivore", "omnivorous", homid_data$Diet)
+```
+
+```{r}
+
+HandD<-ggplot(homid_data, aes(x=Height, y=Diet)) +
+  geom_jitter(aes(color = Location, shape = Location),
+              position=position_jitter(0.2))
+HandD
+```
+
+Type any R code in the chunk, for example:
+```{r}
+HandD2<-ggplot(homid_data, aes(x=Height, y=Diet)) +
+  geom_jitter(aes(color = Zone, shape = Zone),
+              position=position_jitter(0.2))
+HandD2
+```
+```{r}
+location_colors <- c("#E69F00", "#56B4E9", "#009E73")  # Yellow, Blue, Green
+
+# Define order of Diet categories
+diet_order <- c("soft fruits", "hard fruits", "dry fruits", "omnivorous", "carnivorous")
+
+# Plot with modifications
+HandD <- ggplot(homid_data, aes(x = factor(Diet, levels = diet_order), y = Height)) +
+  geom_jitter(aes(color = Location, shape = Location), position = position_jitter(0.2), size = 3) +
+  scale_color_manual(values = location_colors) +
+  ylab("Height, cm")+
+  theme_minimal() +
+  theme(
+    text = element_text(size = 20),
+    legend.position = "top",  # Place legend above the plot
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    panel.background = element_blank(),  # Remove panel background
+    plot.background = element_blank(),   # Remove plot background
+    axis.title.x = element_blank()  # Rename y-axis label
+  )
+
+HandD
+```
+```{r}
+
+location_colors <- c("#008080", "#800080", "#E69F00")
+
+
+# Define order of Diet categories
+diet_order <- c("soft fruits", "hard fruits", "dry fruits", "omnivorous", "carnivorous")
+
+
+# Plot with modifications
+HandD <- ggplot(homid_data, aes(x = factor(Diet, levels = diet_order), y = Height)) +
+  geom_jitter(aes(color = Location, shape = Location), position = position_jitter(0.25), size = 3) +
+  scale_color_manual(values = location_colors) +
+  ylab("Height, cm")+
+  theme_minimal() +
+  theme(
+    panel.border = element_blank(),
+    text = element_text(size = 30, family = "Comic Sans MS"),
+    legend.title = element_text(size = 25, face = "bold"),
+    legend.text = element_text(size = 25),
+    legend.position = "top",  # Place legend above the plot
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    plot.background = element_rect(fill = "#F1EFE6"),  # Set plot background color
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(face = "bold"),
+    axis.title.y = element_text(margin = margin(r = 15), face = "bold"),
+    plot.title = element_text(hjust = -0.2, margin = margin(b = 15), face = "bold"),
+    plot.caption = element_text(size = 10, color = "#A9A9A9", hjust = 0.8,  margin = margin(t = 25)),
+    plot.margin = margin(30, 30, 30, 30)
+  ) +
+  labs(title = "Diet and Height of our ancestors", caption = 'Carbonell, E. (2005). Hominidos: las primeras ocupaciones de los continentes. Editorial Ariel. Santiago Costabile | Created by Elena Shekhova')
+
+HandD
+ggsave("HandD.png", plot = HandD, width = 4000, height = 3000, units = "px", dpi = 300)
+
+
+```
+
+Our carnivourous ansectors were rather tall and lived in either Africa and Europe. How cool is that?
+
+```{r}
+
+title <- "<b>Diet and Height of our ancestors</b>"
+sub <- "Studying characteristics of our ancestors helps us better understand human evolution. By looking at eating patterns of different hominids, we can see that fruit-eaters were shorter than carnivores, and lived in Africa. Carnivores were taller than fruit-eaters, they lived either in Africa or Europe. Asia was home only for omnivores."
+
+# Plot without modifications
+HandD <- ggplot(homid_data, aes(x = factor(Diet, levels = diet_order), y = Height)) +
+        geom_jitter(aes(color = Location, shape = Location), position = position_jitter(0.25), size = 3) +
+        scale_color_manual(values = location_colors) +
+        ylab("Height, cm") +
+        theme_minimal() +
+        theme(
+                panel.border = element_blank(),
+                text = element_text(size = 25, family = "mono"),
+                legend.title = element_text(size = 20, face = "bold"),
+                legend.text = element_text(size = 20),
+                legend.position = "top",  # Place legend above the plot
+                panel.grid.major = element_blank(),  # Remove major gridlines
+                panel.grid.minor = element_blank(),  # Remove minor gridlines
+                plot.background = element_rect(fill = "#F1EFE6"),  # Set plot background color
+                axis.title.x = element_blank(),
+                axis.text.x = element_text(face = "bold"),
+                axis.title.y = element_text(margin = margin(r = 15), face = "bold"),
+                plot.title = element_markdown(size = 25, margin = margin(b = 15), hjust = 0.5),
+                plot.caption = element_text(size = 10, color = "#A9A9A9", hjust = 0.9, margin = margin(t = 25)),
+                plot.margin = margin(30, 30, 30, 30)
+        ) +
+  labs(title = "Diet and Height of our ancestors", subtitle = "texttetxtextetxtetxzttt", caption = 'Carbonell, E. (2005). Hominidos: las primeras ocupaciones de los continentes. Editorial Ariel. Santiago Costabile | Created by Elena Shekhova')
+HandD
+
+
+
+```
