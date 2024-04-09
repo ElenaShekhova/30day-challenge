@@ -1,0 +1,83 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+Upload packages
+
+```{r}
+
+library(europepmc)
+library(tidyverse)
+library(viridis)
+library(ggtext)
+
+```
+Download amount of hits for specific keywords
+
+```{r}
+trend_ce <- europepmc::epmc_hits_trend(query = "circular economy",
+                                        period = 2000:2023, synonym = FALSE)
+```
+
+```{r}
+trend_le <- europepmc::epmc_hits_trend(query = "linear economy",
+                                       period = 2000:2023, synonym = FALSE)
+```
+Combine and plot trends separately
+```{r}
+combined_economy <- rbind(
+  mutate(trend_ce, economy = "Circular economy"),
+  mutate(trend_le, economy = "Linear economy"))
+
+
+combined_economy_plot <- ggplot(combined_economy, aes(x = factor(year), y = (query_hits / all_hits * 100), fill = economy)) +
+  geom_col(width = 0.6, alpha = 0.9) +
+  theme_minimal() +
+  labs(x = "Year", y = "% of all published articles") +
+  ggtitle("Interest in studying different types of economies") +
+  #ylim(0, 0.85) +
+  scale_fill_viridis_d() +
+  facet_wrap(~economy, ncol = 1) +
+  theme(legend.position = "none",
+        axis.text.x = element_text(size = 7),
+        plot.title = element_text(hjust = 0.5),
+        legend.text = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())#+
+#scale_x_discrete(labels = function(x) ifelse(seq_along(x) %% 2 == 1, x, ""))
+
+combined_economy_plot
+
+ggsave("combined_economy_plot.svg", plot = combined_economy_plot, device = "svg")
+```
+Plot two trends together and use X background color
+```{r}
+combined_economy_plot <- ggplot(combined_economy, aes(fill = economy, y = query_hits / all_hits * 100, x = factor(year))) +
+        geom_bar(position = "dodge", stat = "identity", width = 0.7) +
+        scale_fill_manual(values = c("Circular economy" = "#7CFC00", "Linear economy" = "#0072B2")) +
+                labs(x = "Year", y = "% of all published articles", title = "Are scientists studying the circular economy more now?", caption = "Source: Europe PMC | Created by Elena Shekhova") +
+        theme_minimal() +
+        theme(
+                legend.position = "top",
+                legend.title = element_blank(),
+                panel.border = element_blank(),
+                text = element_text(size = 25, family = "sans", color = "white"), # Set text color to white
+                legend.text = element_text(size = 20, color = "white"), # Set legend text color to white
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                plot.background = element_rect(fill = "#192734"), # Set background color
+                axis.title.x = element_blank(),
+                axis.text.x = element_text(size = 20, angle = 60,  vjust = 0.5,  hjust = 0.3),
+                axis.title.y = element_text(margin = margin(r = 15)),
+                plot.title = element_markdown(size = 25, face = "bold", margin = margin(b = 15), hjust = -0.5),
+                plot.caption = element_text(size = 10, color = "white", margin = margin(t = 25)),                 plot.margin = margin(30, 30, 30, 30)
+        )
+
+combined_economy_plot
+
+ggsave("combined_economy_plot.png", plot = combined_economy_plot, width = 4000, height = 3000, units = "px", dpi = 300)
+ggsave("combined_economy_plot.svg", plot = combined_economy_plot, device = "svg")
+
+
+
+```
