@@ -1,0 +1,155 @@
+---
+title: "R Notebook"
+output: html_document
+---
+
+Source of data: Heinz G, Peterson LJ, Johnson RW, Kerk CJ. 2003. Exploring Relationships in Body Dimensions. Journal of Statistics Education 11(2).
+
+```{r}
+library(tidyverse)
+library(viridis)
+library(ggtext)
+library(openintro)
+```
+Data with body measurements comes with the openintro package and called bdims
+```{r}
+data(bdims)
+mean(bdims$wgt)
+```
+Now let's calculate BMI and save only females with normal weight meaning BMI <25
+```{r}
+bdims_bmi <- bdims %>%
+  mutate(BMI = wgt / (hgt/100)^2) %>%
+  filter(BMI < 25 )%>%
+  filter(sex == 0 )
+```
+What's the distribution for chest, waist and hip girth
+```{r}
+ggplot(bdims_bmi, aes(x = che_gi)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black")+
+  labs(title = "Circumference of the chest", x = "Chest girth in cm", y = "Frequency")
+
+ggplot(bdims_bmi, aes(x = wai_gi)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black")+
+  labs(title = "Circumference of the waist", x = "Waist girth in cm", y = "Frequency")
+
+ggplot(bdims_bmi, aes(x = hip_gi)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black")+
+  labs(title = "Circumference of the hips", x = "Hip girth in cm", y = "Frequency")
+
+
+```
+Now we will find out if 90-60-90 (+-1) appears in our dataset
+```{r}
+result <- bdims_bmi %>%
+  filter(
+    che_gi >= 89 & che_gi <= 91 &
+      wai_gi >= 59 & wai_gi <= 61 &
+      hip_gi >= 89 & hip_gi <= 91
+  )
+```
+Print the decision
+```{r}
+if (nrow(result) > 0) {
+  print("Rows with values within ±1 of the specified values exist in the dataset.")
+} else {
+  print("No rows with values within ±1 of the specified values exist in the dataset.")
+}
+```
+Now we will find the most common values of che_gi and hip_gi that correspond to wai_gi values within the range of 59 to 61 cm
+```{r}
+
+common60 <- bdims_bmi %>%
+        filter(wai_gi >= 59 & wai_gi <= 61)
+
+mode_che_gi <- names(sort(table(common60$che_gi), decreasing = TRUE))[1]
+mode_hip_gi <- names(sort(table(common60$hip_gi), decreasing = TRUE))[1]
+
+mode_che_gi
+mode_hip_gi
+
+median_che_gi <- median(common60$che_gi)
+median_hip_gi <- median(common60$hip_gi)
+
+median_che_gi
+median_hip_gi
+
+mean_che_gi <- mean(common60$che_gi)
+mean_hip_gi <- mean(common60$hip_gi)
+
+mean_che_gi
+mean_hip_gi
+
+```
+Rounded means, which are 79 anf 87, are equal to median values, and we will call them 'average'.
+
+Time to plot!
+```{r}
+
+library(patchwork)
+
+che_gi_value <- 90
+wai_gi_value <- 60
+hip_gi_value <- 90
+
+
+plot1 <- ggplot(bdims_bmi, aes(x = che_gi)) +
+        geom_histogram(binwidth = 1, fill = "#008080", color = "black") +
+        geom_vline(xintercept = che_gi_value, color = "#FF69B4", linetype = "dashed", size = 2) +
+        labs(title = stringr::str_wrap("Is <span style='color:#FF69B4'>90-60-90</span> a realistic idea of female body?"),
+             subtitle = paste(stringr::str_wrap("Let's look at the body measurements of 215 physically active women with normal weight (BMI < 25). The histograms illustrate a wide distribution of body measurements. The bust circumference of 90 cm and waist circumference of 60 cm are uncommon. The analysis also shows that not a single woman had a 90-60-90 body shape. On average, women with a 60 cm waist typically have a bust measurement of 79 cm and a hip measurement of 87 cm. The 90-60-90 does not represent a common body shape."), "\n\n", "Bust Circumference" ),
+             y = "Frequency")+
+        theme_minimal() +
+        theme(
+                panel.border = element_blank(),
+                text = element_text(size = 18, family = "mono"),
+                legend.position = "top",
+                panel.grid.major = element_blank(),  # Remove major gridlines
+                panel.grid.minor = element_blank(),  # Remove minor gridlines
+                axis.title.x = element_blank(),
+                axis.text.x = element_text(face = "bold"),
+                axis.title.y = element_blank(),
+                plot.title = element_markdown(margin = margin(b = 15, t =30), face = "bold")
+                )
+plot1
+plot2 <- ggplot(bdims_bmi, aes(x = wai_gi)) +
+        geom_histogram(binwidth = 1, fill = "#008080", color = "black") +
+        geom_vline(xintercept = wai_gi_value, color = "#FF69B4", linetype = "dashed", size = 2) +
+        labs(subtitle = "Waist Circumference",
+              y = "Number of individuals")+
+        theme_minimal() +
+        theme(
+                panel.border = element_blank(),
+                text = element_text(size = 18, family = "mono"),
+                panel.grid.major = element_blank(),  # Remove major gridlines
+                panel.grid.minor = element_blank(),  # Remove minor gridlines
+                axis.title.x = element_blank(),
+                axis.text.x = element_text(face = "bold"),
+                axis.title.y = element_text(margin = margin(r = 15), face = "bold")
+                )
+plot2
+plot3 <- ggplot(bdims_bmi, aes(x = hip_gi)) +
+        geom_histogram(binwidth = 1, fill = "#008080", color = "black") +
+        geom_vline(xintercept = hip_gi_value, color = "#FF69B4", linetype = "dashed", size = 2) +
+        labs(subtitle = "Hip Circumference",
+             x = "Measurments in cm",
+             caption = "Heinz G, et al. 2003. Exploring Relationships in Body Dimensions|Created by Elena Shekhova")+
+        theme_minimal() +
+        theme(
+                panel.border = element_blank(),
+                text = element_text(size = 18, family = "mono"),
+                panel.grid.major = element_blank(),  # Remove major gridlines
+                panel.grid.minor = element_blank(),  # Remove minor gridlines
+                axis.title.x = element_text(margin = margin(t = 15), face = "bold"),
+                axis.text.x = element_text(face = "bold"),
+                axis.title.y = element_blank(),
+                plot.caption = element_text(size = 15, color = "#A9A9A9", hjust = 0.8,  margin = margin(t = 25, b = 30)))
+plot3
+
+combined_plots <- plot1 + plot2 + plot3 + plot_layout(ncol = 1)
+
+
+combined_plots
+ggsave("combined_plots.png", plot = combined_plots, width = 4000, height = 3000, units = "px", dpi = 300)
+
+```
