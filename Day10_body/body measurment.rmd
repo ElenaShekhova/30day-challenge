@@ -97,12 +97,12 @@ plot1 <- ggplot(bdims_bmi, aes(x = che_gi)) +
         geom_histogram(binwidth = 1, fill = "#008080", color = "black") +
         geom_vline(xintercept = che_gi_value, color = "#FF69B4", linetype = "dashed", size = 2) +
         labs(title = stringr::str_wrap("Is <span style='color:#FF69B4'>90-60-90</span> a realistic idea of female body?"),
-             subtitle = paste(stringr::str_wrap("Let's look at the body measurements of 215 physically active women with normal weight (BMI < 25). The histograms illustrate a wide distribution of body measurements. The bust circumference of 90 cm and waist circumference of 60 cm are uncommon. The analysis also shows that not a single woman had a 90-60-90 body shape. On average, women with a 60 cm waist typically have a bust measurement of 79 cm and a hip measurement of 87 cm. The 90-60-90 does not represent a common body shape."), "\n\n", "Bust Circumference" ),
+             subtitle = paste(stringr::str_wrap("Let's look at the body measurements of 215 physically active women with normal weight (BMI < 25). The histograms illustrate a wide distribution of body measurements. The bust circumference of 90 cm and waist circumference of 60 cm are uncommon. The analysis also shows that not a single woman had a 90-60-90 body shape. On average, women with a 60 cm waist typically have a bust measurement of 79 cm and a hip measurement of 87 cm. The 90-60-90 combination does not represent a common body shape."), "\n\n", "Bust Circumference" ),
              y = "Frequency")+
         theme_minimal() +
         theme(
                 panel.border = element_blank(),
-                text = element_text(size = 18, family = "mono"),
+                text = element_text(size = 18, family = "Comic Sans MS"),
                 legend.position = "top",
                 panel.grid.major = element_blank(),  # Remove major gridlines
                 panel.grid.minor = element_blank(),  # Remove minor gridlines
@@ -120,7 +120,7 @@ plot2 <- ggplot(bdims_bmi, aes(x = wai_gi)) +
         theme_minimal() +
         theme(
                 panel.border = element_blank(),
-                text = element_text(size = 18, family = "mono"),
+                text = element_text(size = 18, family = "Comic Sans MS"),
                 panel.grid.major = element_blank(),  # Remove major gridlines
                 panel.grid.minor = element_blank(),  # Remove minor gridlines
                 axis.title.x = element_blank(),
@@ -137,7 +137,7 @@ plot3 <- ggplot(bdims_bmi, aes(x = hip_gi)) +
         theme_minimal() +
         theme(
                 panel.border = element_blank(),
-                text = element_text(size = 18, family = "mono"),
+                text = element_text(size = 18, family = "Comic Sans MS"),
                 panel.grid.major = element_blank(),  # Remove major gridlines
                 panel.grid.minor = element_blank(),  # Remove minor gridlines
                 axis.title.x = element_text(margin = margin(t = 15), face = "bold"),
