@@ -5,12 +5,12 @@ output: html_document
 
 Data source
 Carbonell, E. (2005). Homínidos: las primeras ocupaciones de los continentes. Editorial Ariel.
-Santiago Costabile
+Santiago Costabile H:/Statistics/30day-challange/Day05_evolution/
 
 ```{r}
 library(dplyr)
 library(ggplot2)
-homid_data <- read.csv(file = "Homininos_DataSet (1).csv", header = TRUE)
+homid_data <- read.csv(file = "Day05_evolution/Homininos_DataSet (1).csv", header = TRUE)
 homid_data$Diet <- gsub("omnivore", "omnivorous", homid_data$Diet)
 ```
 
