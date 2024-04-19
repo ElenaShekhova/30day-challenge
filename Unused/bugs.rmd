@@ -1,0 +1,78 @@
+---
+title: "R Notebook"
+output: html_document
+---
+
+From Data is Plural:
+https://docs.google.com/spreadsheets/d/1wZhPLMCHKJvwOkP4juclhjFgqIY8fQFMemwKL2c64vk/edit#gid=0
+
+Danish zoologist Anders Pape Møller counted the number of insects killed on the windscreen of a single car after each of 1,375 journeys along the same stretch of road between 1997 and 2017. After accounting for time of day, weather, and other factors, Møller says his data suggests an 80% decline in flying insects during that time. Related: The Guardian on two bug-splat studies, including Møller’s. [h/t Laura Norén and Brad Stenger]
+Møller, Anders Pape, AgroParisTech
+https://doi.org/10.5061/dryad.gq73493
+
+Tutorials to follow:
+https://www.datanovia.com/en/blog/gganimate-how-to-create-plots-with-beautiful-animation-in-r/
+https://rpubs.com/deepansha14/animated_timeseries_plot
+```{r}
+library(dplyr)
+library(ggplot2)
+#install.packages("gganimate")
+library(gganimate)
+library(ggimage)
+bugs_data <- read.csv(file = "Day15_bugs/bugs.csv", header = TRUE) %>%
+        mutate(N = row_number())
+```
+
+
+```{r}
+
+bat_image_link <-
+  "https://raw.githubusercontent.com/goodekat/presentations/master/2019-isugg-gganimate-spooky/figures/bat-cartoon.png"
+bugs_data %>%
+  mutate(
+    image = bat_image_link
+  ) %>%
+  ggplot(aes(x = Total.Insects,
+             y = N)) +
+  geom_path() +
+  geom_image(aes(image = image),
+             size = 0.3) +
+  transition_reveal(time)
+
+```
+
+Type any R code in the chunk, for example:
+```{r}
+bugs_data %>%
+        ggplot(aes(x = N, y = Total.Insects)) +
+        geom_line(size = 1) +
+        geom_hline(aes(yintercept = 0), lty = 2) +
+        annotate("text", x = 0, y = 0,
+                 label = "20th century mean", size = 3) +
+        scale_color_viridis_d(option = "C", end = .75) +
+        labs(
+                title = "Temperature anomaly relative to 20th century mean",
+                x = "Year",
+                y = "Temperature anomaly (degrees C)"
+        )
+```
+
+```{r}
+
+anim_1 <- bugs_data %>%
+  ggplot(aes(x = N, y = Total.Insects)) +
+  geom_line(size = 1) +
+  #geom_hline(aes(yintercept = 0), lty = 2) +
+  #annotate("text", x = 2005, y = -.08,
+          # label = "20th century mean", size = 3) +
+  scale_color_viridis_d(option = "C", end = .75) +
+  labs(
+    title = "Temperature anomaly relative to 20th century mean",
+    x = "Year",
+    y = "Temperature anomaly (degrees C)"
+  ) +
+  transition_reveal(Year)
+
+animate(anim_1, nframes = 10)
+anim_save(anim_1, animation = last_animation())
+```

@@ -20,6 +20,8 @@ HandD<-ggplot(homid_data, aes(x=Height, y=Diet)) +
   geom_jitter(aes(color = Location, shape = Location),
               position=position_jitter(0.2))
 HandD
+
+
 ```
 
 Type any R code in the chunk, for example:
