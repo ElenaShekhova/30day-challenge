@@ -6,10 +6,13 @@ output: html_document
 Source of data: Heinz G, Peterson LJ, Johnson RW, Kerk CJ. 2003. Exploring Relationships in Body Dimensions. Journal of Statistics Education 11(2).
 
 ```{r}
+library(rmarkdown)
 library(tidyverse)
 library(viridis)
 library(ggtext)
 library(openintro)
+
+
 ```
 Data with body measurements comes with the openintro package and called bdims
 ```{r}
